@@ -1,103 +1,158 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React from "react";
+import { AudioUpload } from "@/components/features/audio-upload/audio-upload.component";
+import { AudioProcessing } from "@/components/features/audio-processing/audio-processing.component";
+import { AudioPlayer } from "@/components/ui/audio-player";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Notification } from "@/components/ui/notification";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useAudioProcessor } from "@/hooks/use-audio-processor";
+import { useAudioFiles } from "@/hooks/use-audio-files";
+import { useNotifications } from "@/hooks/use-notifications";
+import { AudioPreset } from "@/types/audio";
+import { SongList } from '@/components/features/song-list/song-list.component';
+import { RealtimeEffects } from '@/components/features/realtime-effects/realtime-effects.component';
+
+export default function HomePage() {
+  const {
+    isLoading,
+    isProcessing,
+    progress,
+    error,
+    processAudio,
+    isReady,
+    clearError,
+  } = useAudioProcessor();
+
+  const {
+    originalFile,
+    originalUrl,
+    processedAudios,
+    handleFileSelect,
+    addProcessedAudio,
+    downloadAudio,
+  } = useAudioFiles();
+
+  const { notifications, removeNotification, showSuccess, showError } =
+    useNotifications();
+
+  const handleProcess = async (preset: AudioPreset, format: "mp3" | "wav") => {
+    if (!originalFile) return;
+
+    clearError();
+    const result = await processAudio(originalFile, preset, format);
+
+    if (result) {
+      addProcessedAudio(result);
+      showSuccess(`Трек "${preset.name}" успешно обработан! 🎵`, 5000);
+    } else {
+      showError("Ошибка при обработке аудио файла");
+    }
+  };
+
+  const handleFileSelectWithNotification = (file: File) => {
+    handleFileSelect(file);
+    showSuccess(`Файл "${file.name}" успешно загружен! 📁`, 3000);
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto px-4 space-y-8">
+        {/* Header with theme toggle */}
+        <div className="flex items-center justify-between">
+          <div className="text-center space-y-2 flex-1">
+            <h1 className="text-4xl font-bold text-foreground">
+              Audio Processor
+            </h1>
+            <p className="text-muted-foreground">
+              Профессиональная обработка аудио с эффектами в браузере
+            </p>
+          </div>
+          <ThemeToggle />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        {/* File Upload */}
+        <AudioUpload
+          onFileSelect={handleFileSelectWithNotification}
+          isDisabled={isLoading || isProcessing}
+        />
+
+        {/* Original Audio Player */}
+        {originalFile && originalUrl && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Оригинальный файл</CardTitle>
+              <CardDescription>
+                {originalFile.name} •{" "}
+                {(originalFile.size / 1024 / 1024).toFixed(2)} MB
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AudioPlayer src={originalUrl} title={originalFile.name} />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Processing Controls */}
+        {originalFile && (
+          <AudioProcessing
+            onProcess={handleProcess}
+            isProcessing={isProcessing}
+            progress={progress}
+            error={error}
+            isReady={isReady}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        )}
+
+        {/* Processed Audio Results */}
+        {processedAudios.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Обработанные файлы</CardTitle>
+              <CardDescription>
+                Прослушайте результат и скачайте файлы
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {processedAudios.map((audio, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-medium text-foreground">
+                      {audio.preset.name}
+                    </h4>
+                    <span className="text-sm text-muted-foreground uppercase">
+                      {audio.format}
+                    </span>
+                  </div>
+                  <AudioPlayer
+                    src={audio.url}
+                    title={`${originalFile?.name} - ${audio.preset.name}`}
+                    onDownload={() => downloadAudio(audio)}
+                  />
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Notifications */}
+      {notifications.map((notification) => (
+        <Notification
+          key={notification.id}
+          message={notification.message}
+          type={notification.type}
+          duration={notification.duration}
+          onClose={() => removeNotification(notification.id)}
+        />
+      ))}
     </div>
   );
 }
