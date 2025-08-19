@@ -17,8 +17,6 @@ import { useAudioProcessor } from "@/hooks/use-audio-processor";
 import { useAudioFiles } from "@/hooks/use-audio-files";
 import { useNotifications } from "@/hooks/use-notifications";
 import { AudioPreset } from "@/types/audio";
-import { SongList } from '@/components/features/song-list/song-list.component';
-import { RealtimeEffects } from '@/components/features/realtime-effects/realtime-effects.component';
 
 export default function HomePage() {
   const {

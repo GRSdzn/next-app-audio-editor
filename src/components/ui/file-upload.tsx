@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
+import { useDropzone, FileRejection, DropEvent } from "react-dropzone";
 import { Upload, File, X, AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -29,11 +29,15 @@ export function FileUpload({
   const [isValidating, setIsValidating] = useState(false);
 
   const onDrop = useCallback(
-    async (acceptedFiles: File[], rejectedFiles: any[]) => {
+    async <T extends File>(
+      acceptedFiles: T[],
+      fileRejections: FileRejection[],
+      event: DropEvent
+    ) => {
       setError("");
 
-      if (rejectedFiles.length > 0) {
-        const rejection = rejectedFiles[0];
+      if (fileRejections.length > 0) {
+        const rejection = fileRejections[0];
         if (rejection.errors[0]?.code === "file-too-large") {
           setError(
             `Файл слишком большой. Максимальный размер: ${(
@@ -68,7 +72,8 @@ export function FileUpload({
 
           setSelectedFile(file);
           onFileSelect(file);
-        } catch (err) {
+        } catch (error) {
+          console.error("Validation error:", error);
           setError("Ошибка при проверке файла");
         } finally {
           setIsValidating(false);

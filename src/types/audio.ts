@@ -36,17 +36,21 @@ export type AudioFormat = "mp3" | "wav" | "flac" | "m4a" | "ogg";
 
 // Изменено с interface на class
 export class AudioProcessingError extends Error {
-  public code: string;
-  public details?: any;
+  code: string;
+  details?: unknown;
 
-  constructor(options: { code: string; message: string; details?: any }) {
-    super(options.message);
+  constructor({
+    code,
+    message,
+    details,
+  }: {
+    code: string;
+    message: string;
+    details?: unknown;
+  }) {
+    super(message);
     this.name = "AudioProcessingError";
-    this.code = options.code;
-    this.details = options.details;
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AudioProcessingError);
-    }
+    this.code = code;
+    this.details = details;
   }
 }

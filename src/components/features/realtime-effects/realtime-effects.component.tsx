@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { AudioPlayer } from "@/components/ui/audio-player";
 import { Settings, Play, Pause, RotateCcw } from "lucide-react";
 
 interface RealtimeEffectsProps {

@@ -1,39 +1,15 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   experimental: {
-    serverComponentsExternalPackages: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
+    // Удалить serverComponentsExternalPackages
   },
-  webpack: (config, { isServer }) => {
-    // Конфигурация для ffmpeg.wasm
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        path: false,
-        crypto: false,
-      };
-    }
-
+  serverExternalPackages: ["@ffmpeg/ffmpeg", "@ffmpeg/util"],
+  webpack: (config: any) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    };
     return config;
-  },
-  // Настройки для Vercel
-  headers: async () => {
-    return [
-      {
-        source: "/(.*)",
-        headers: [
-          {
-            key: "Cross-Origin-Embedder-Policy",
-            value: "require-corp",
-          },
-          {
-            key: "Cross-Origin-Opener-Policy",
-            value: "same-origin",
-          },
-        ],
-      },
-    ];
   },
 };
 

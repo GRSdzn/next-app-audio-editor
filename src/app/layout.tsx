@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { AudioPlayerProvider } from "@/contexts/audio-player-context";
 import { Toaster } from "sonner";

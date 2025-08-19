@@ -131,7 +131,7 @@ class AudioProcessor {
     await this.ffmpeg.deleteFile(inputName);
     await this.ffmpeg.deleteFile(outputName);
 
-    return new Blob([data], {
+    return new Blob([data as BlobPart], {
       type: outputFormat === "mp3" ? "audio/mpeg" : "audio/wav",
     });
   }

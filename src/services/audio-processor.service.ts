@@ -1,7 +1,6 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import {
-  AudioEffect,
   AudioProcessingOptions,
   AudioInfo,
   AudioProcessingError,
@@ -139,7 +138,7 @@ class AudioProcessorService {
       // Очищаем временные файлы
       await this.cleanup([inputName, outputName]);
 
-      return new Blob([data], {
+      return new Blob([data as BlobPart], {
         type: outputFormat === "mp3" ? "audio/mpeg" : "audio/wav",
       });
     } catch (error) {
