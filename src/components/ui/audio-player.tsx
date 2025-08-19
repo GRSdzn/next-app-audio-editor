@@ -9,6 +9,7 @@ interface AudioPlayerProps {
   src: string;
   title: string;
   onDownload?: () => void;
+  showDownload?: boolean; // Новый параметр
   className?: string;
 }
 
@@ -16,6 +17,7 @@ export function AudioPlayer({
   src,
   title,
   onDownload,
+  showDownload = true, // По умолчанию показываем
   className,
 }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -145,7 +147,7 @@ export function AudioPlayer({
 
       <div className="flex items-center justify-between">
         <h3 className="font-medium text-foreground truncate">{title}</h3>
-        {onDownload && (
+        {onDownload && showDownload && (
           <button
             onClick={onDownload}
             className="p-2 hover:bg-muted rounded-full transition-colors"

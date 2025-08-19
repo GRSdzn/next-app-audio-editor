@@ -18,7 +18,8 @@ import { useAudioProcessor } from "@/hooks/use-audio-processor";
 import { useAudioFiles } from "@/hooks/use-audio-files";
 import { useNotifications } from "@/hooks/use-notifications";
 import { AudioPreset } from "@/types/audio";
-import { Music, Sparkles, Download } from "lucide-react";
+import { Music, Sparkles, Download, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -41,6 +42,7 @@ export default function HomePage() {
     handleFileSelect,
     addProcessedAudio,
     downloadAudio,
+    removeProcessedAudio,
   } = useAudioFiles();
 
   const { notifications, removeNotification, showSuccess, showError } =
@@ -209,45 +211,40 @@ export default function HomePage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {processedAudios.map((audio, index) => (
-                    <Card
-                      key={index}
-                      className="group hover:shadow-2xl transition-all duration-500 border-l-4 border-l-green-400 bg-gradient-to-br from-green-50/40 to-emerald-50/40 dark:from-green-950/20 dark:to-emerald-950/20 hover:scale-[1.02] animate-in slide-in-from-bottom-4 duration-700"
-                      style={{ animationDelay: `${index * 100}ms` }}
-                    >
-                      <CardHeader className="pb-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-4">
-                            <div className="p-2.5 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg">
-                              <Sparkles className="h-5 w-5 text-white" />
-                            </div>
-                            <div>
-                              <CardTitle className="text-xl group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors font-semibold">
-                                {audio.preset.name}
-                              </CardTitle>
-                              <CardDescription className="text-sm font-medium mt-1">
-                                {originalFile?.name}
-                              </CardDescription>
-                            </div>
+                    <Card key={index} className="mb-4">
+                      <CardHeader>
+                        <CardTitle className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <Sparkles className="h-5 w-5 text-purple-500" />
+                            <span>{audio.preset.name}</span>
                           </div>
-                          <div className="flex items-center space-x-3">
-                            <span className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs font-bold uppercase tracking-wide shadow-sm">
-                              {audio.format}
-                            </span>
-                            <button
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() => downloadAudio(audio)}
-                              className="p-2.5 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-xl transition-all duration-300 group/btn shadow-sm hover:shadow-md"
-                              title="Скачать файл"
+                              className="h-8 w-8 hover:bg-primary/10 transition-colors"
+                              title="Скачать"
                             >
-                              <Download className="h-5 w-5 text-green-600 dark:text-green-400 group-hover/btn:scale-110 transition-transform duration-300" />
-                            </button>
+                              <Download className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => removeProcessedAudio(index)}
+                              className="flex items-center gap-1 text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
                           </div>
-                        </div>
+                        </CardTitle>
                       </CardHeader>
-                      <CardContent className="pt-0">
+                      <CardContent>
                         <AudioPlayer
                           src={audio.url}
                           title={`${originalFile?.name} - ${audio.preset.name}`}
-                          onDownload={() => downloadAudio(audio)}
+                          // Убираем onDownload чтобы избежать дублирования кнопок
+                          // onDownload={() => downloadAudio(audio)}
                         />
                       </CardContent>
                     </Card>

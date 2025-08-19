@@ -11,6 +11,8 @@ class AudioProcessorService {
   private ffmpeg: FFmpeg | null = null;
   private loaded = false;
   private loading = false;
+  private progressCallback: ((data: { progress: number }) => void) | null =
+    null;
 
   constructor() {
     // Инициализация только на клиенте
@@ -76,59 +78,58 @@ class AudioProcessorService {
     }
 
     const { effects, outputFormat, onProgress } = options;
-    const inputName = `input.${file.name.split(".").pop()}`;
-    const outputName = `output.${outputFormat}`;
+    const inputName = `input_${Date.now()}.${file.name.split(".").pop()}`;
+    const outputName = `output_${Date.now()}.${outputFormat}`;
+
+    // Очищаем предыдущие event listeners правильно
+    if (this.progressCallback) {
+      this.ffmpeg.off("progress", this.progressCallback);
+      this.progressCallback = null;
+    }
 
     try {
       // Загружаем файл в ffmpeg
       await this.ffmpeg.writeFile(inputName, await fetchFile(file));
 
       // Строим фильтры правильно
-      // Строим фильтры с правильным разделением
-      const tempoFilters = effects
-        .filter((effect) => effect.name === "tempo")
-        .map((effect) => effect.params[0]);
-
-      const otherFilters = effects
-        .filter((effect) => effect.name !== "tempo")
-        .map((effect) => effect.params[0]);
-
-      // Объединяем фильтры правильно
-      const allFilters = [...tempoFilters, ...otherFilters];
-      const filters = allFilters.join(",");
+      const filters = effects
+        .map((effect) => effect.params[0])
+        .filter(Boolean)
+        .join(",");
 
       console.log("FFmpeg filters:", filters);
 
-      console.log("FFmpeg command:", [
-        "-i",
-        inputName,
-        "-af",
-        filters,
-        "-c:a",
-        outputFormat === "mp3" ? "libmp3lame" : "pcm_s16le",
-        "-y",
-        outputName,
-      ]);
-      console.log("FFmpeg filters:", filters); // Для отладки
-
-      // Настройка прогресса
+      // Настройка прогресса с сохранением ссылки на callback
       if (onProgress) {
-        this.ffmpeg.on("progress", ({ progress }) => {
+        this.progressCallback = ({ progress }: { progress: number }) => {
           onProgress(Math.round(progress * 100));
-        });
+        };
+        this.ffmpeg.on("progress", this.progressCallback);
       }
 
-      // Выполняем обработку
+      // Исправленные аргументы FFmpeg
       const args = [
         "-i",
         inputName,
-        "-af",
-        filters,
+        ...(filters ? ["-af", filters] : []),
         "-c:a",
         outputFormat === "mp3" ? "libmp3lame" : "pcm_s16le",
-        "-y", // Перезаписывать выходной файл
+        ...(outputFormat === "mp3"
+          ? ["-b:a", "320k", "-q:a", "0", "-joint_stereo", "0"]
+          : [
+              // Исправленные настройки для WAV - убираем дублирующиеся параметры
+              "-ar",
+              "44100",
+              "-ac",
+              "2", // Стерео
+            ]),
+        "-avoid_negative_ts",
+        "make_zero",
+        "-y",
         outputName,
       ];
+
+      console.log("FFmpeg command:", args);
 
       await this.ffmpeg.exec(args);
 
@@ -138,12 +139,23 @@ class AudioProcessorService {
       // Очищаем временные файлы
       await this.cleanup([inputName, outputName]);
 
+      // Очищаем event listeners после обработки
+      if (this.progressCallback) {
+        this.ffmpeg.off("progress", this.progressCallback);
+        this.progressCallback = null;
+      }
+
       return new Blob([data as BlobPart], {
         type: outputFormat === "mp3" ? "audio/mpeg" : "audio/wav",
       });
     } catch (error) {
       // Очищаем файлы в случае ошибки
       await this.cleanup([inputName, outputName]);
+      // Очищаем event listeners
+      if (this.progressCallback) {
+        this.ffmpeg.off("progress", this.progressCallback);
+        this.progressCallback = null;
+      }
 
       throw new AudioProcessingError({
         code: "PROCESSING_ERROR",
