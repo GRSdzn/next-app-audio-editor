@@ -129,12 +129,12 @@ export function FileUpload({
         ) : selectedFile ? (
           <div className="space-y-4">
             <div className="flex items-center justify-center space-x-2">
-              <File className="h-8 w-8 text-green-600" />
+              <File className="h-8 w-8 text-blue-600" />
               <div className="text-left">
-                <p className="font-medium text-green-800">
+                <p className="font-medium text-blue-800 dark:text-blue-400">
                   {selectedFile.name}
                 </p>
-                <p className="text-sm text-green-600">
+                <p className="text-sm text-blue-600 dark:text-blue-500">
                   {formatFileSize(selectedFile.size)}
                 </p>
               </div>
@@ -144,7 +144,7 @@ export function FileUpload({
                     e.stopPropagation();
                     removeFile();
                   }}
-                  className="p-1 hover:bg-red-100 rounded-full transition-colors"
+                  className="p-1 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-full transition-colors"
                 >
                   <X className="h-4 w-4 text-red-500" />
                 </button>

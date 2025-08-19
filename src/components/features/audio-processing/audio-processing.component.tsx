@@ -81,6 +81,7 @@ export const AudioProcessing: React.FC<AudioProcessingProps> = ({
             <Select
               value={selectedPresetId}
               onValueChange={setSelectedPresetId}
+              disabled={isProcessing}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Выберите пресет" />
@@ -103,6 +104,7 @@ export const AudioProcessing: React.FC<AudioProcessingProps> = ({
           <div className="space-y-2">
             <label className="text-sm font-medium">Формат вывода</label>
             <Select
+              disabled={isProcessing}
               value={outputFormat}
               onValueChange={(value: "mp3" | "wav") => setOutputFormat(value)}
             >
