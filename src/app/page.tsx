@@ -10,6 +10,7 @@ import { LoadingScreen } from '@/components/ui/loading-screen';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAudioFiles } from '@/hooks/use-audio-files';
 import { useNotifications } from '@/hooks/use-notifications';
+import { useGlobalAudio } from '@/contexts/global-audio-context';
 import { Music, Sparkles } from 'lucide-react';
 
 export default function HomePage() {
@@ -17,6 +18,7 @@ export default function HomePage() {
 
   const { originalFile, originalUrl, handleFileSelect } = useAudioFiles();
   const { notifications, removeNotification, showSuccess } = useNotifications();
+  const { addTrack } = useGlobalAudio();
 
   // Simulate app initialization
   useEffect(() => {
@@ -29,6 +31,18 @@ export default function HomePage() {
 
   const handleFileSelectWithNotification = (file: File) => {
     handleFileSelect(file);
+    
+    // Добавляем трек в глобальное состояние
+    const audioUrl = URL.createObjectURL(file);
+    const newTrack = {
+      id: Date.now().toString(),
+      title: file.name.replace(/\.[^/.]+$/, ""), // убираем расширение
+      url: audioUrl,
+      duration: undefined, // будет установлено позже при загрузке аудио
+      file: file
+    };
+    
+    addTrack(newTrack);
     showSuccess(`Файл "${file.name}" успешно загружен! 📁`, 3000);
   };
 

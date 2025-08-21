@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -140,6 +140,14 @@
     --radius: 0.5rem;
     --range-thumb: 222.2 84% 4.9%; /* Темно-синий для светлой темы */
     --range-track: 214.3 31.8% 91.4%; /* Светлая дорожка для светлой темы */
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
   }
 
   .dark {
@@ -164,6 +172,14 @@
     --ring: 224.3 76.3% 94.1%;
     --range-thumb: 210 40% 70%; /* Светлый для темной темы */
     --range-track: 210 40% 98%; /* Белая дорожка для темной темы */
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.439 0 0);
   }
 }
 
@@ -177,16 +193,10 @@
 }
 
 /* Улучшенные стили для audio controls с лучшей видимостью */
-input[type="range"] {
+input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
-  background: linear-gradient(
-    to right,
-    hsl(var(--primary)) 0%,
-    hsl(var(--primary)) var(--progress, 0%),
-    hsl(var(--muted)) var(--progress, 0%),
-    hsl(var(--muted)) 100%
-  );
+  background: linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) var(--progress, 0%), hsl(var(--muted)) var(--progress, 0%), hsl(var(--muted)) 100%);
   cursor: pointer;
   height: 8px;
   border-radius: 4px;
@@ -194,13 +204,13 @@ input[type="range"] {
   border: 1px solid hsl(var(--border));
 }
 
-input[type="range"]::-webkit-slider-track {
+input[type='range']::-webkit-slider-track {
   background: hsl(var(red));
   height: 8px;
   border-radius: 4px;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   background: hsl(var(--primary));
@@ -216,31 +226,25 @@ input[type="range"]::-webkit-slider-thumb {
   z-index: 2;
 }
 
-input[type="range"]::-webkit-slider-thumb:hover {
+input[type='range']::-webkit-slider-thumb:hover {
   transform: scale(1.2);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 0 2px hsl(var(--primary));
   background: hsl(var(--primary));
 }
 
-input[type="range"]::-webkit-slider-thumb:active {
+input[type='range']::-webkit-slider-thumb:active {
   transform: scale(1.1);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), 0 0 0 3px hsl(var(--primary));
 }
 
-input[type="range"]::-moz-range-track {
-  background: linear-gradient(
-    to right,
-    hsl(var(--primary)) 0%,
-    hsl(var(--primary)) var(--progress, 0%),
-    hsl(var(--muted)) var(--progress, 0%),
-    hsl(var(--muted)) 100%
-  );
+input[type='range']::-moz-range-track {
+  background: linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) var(--progress, 0%), hsl(var(--muted)) var(--progress, 0%), hsl(var(--muted)) 100%);
   height: 8px;
   border-radius: 4px;
   border: 1px solid hsl(var(--border));
 }
 
-input[type="range"]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
   background: hsl(var(--primary));
   height: 18px;
   width: 18px;
@@ -251,28 +255,28 @@ input[type="range"]::-moz-range-thumb {
   transition: all 0.2s ease;
 }
 
-input[type="range"]::-moz-range-thumb:hover {
+input[type='range']::-moz-range-thumb:hover {
   transform: scale(1.2);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 0 2px hsl(var(--primary));
 }
 
-input[type="range"]:disabled {
+input[type='range']:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-input[type="range"]:disabled::-webkit-slider-thumb {
+input[type='range']:disabled::-webkit-slider-thumb {
   cursor: not-allowed;
   transform: none;
 }
 
-input[type="range"]:disabled::-moz-range-thumb {
+input[type='range']:disabled::-moz-range-thumb {
   cursor: not-allowed;
   transform: none;
 }
 
 /* Улучшенные стили для range inputs */
-input[type="range"] {
+input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
   background: hsl(var(--range-track));
@@ -284,14 +288,14 @@ input[type="range"] {
 }
 
 /* Track стили */
-input[type="range"]::-webkit-slider-track {
+input[type='range']::-webkit-slider-track {
   background: hsl(var(--range-track));
   height: 6px;
   border-radius: 3px;
   border: 1px solid hsl(var(--border));
 }
 
-input[type="range"]::-moz-range-track {
+input[type='range']::-moz-range-track {
   background: hsl(var(--range-track));
   height: 6px;
   border-radius: 3px;
@@ -299,7 +303,7 @@ input[type="range"]::-moz-range-track {
 }
 
 /* Thumb стили */
-input[type="range"]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   height: 18px;
@@ -312,13 +316,13 @@ input[type="range"]::-webkit-slider-thumb {
   transition: all 0.2s ease;
 }
 
-input[type="range"]::-webkit-slider-thumb:hover {
+input[type='range']::-webkit-slider-thumb:hover {
   background: hsl(var(--range-thumb));
   transform: scale(1.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-input[type="range"]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
   height: 18px;
   width: 18px;
   border-radius: 50%;
@@ -330,22 +334,22 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* Hover эффекты */
-input[type="range"]::-moz-range-thumb:hover {
+input[type='range']::-moz-range-thumb:hover {
   transform: scale(1.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-input[type="range"]:disabled {
+input[type='range']:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-input[type="range"]:disabled::-webkit-slider-thumb {
+input[type='range']:disabled::-webkit-slider-thumb {
   cursor: not-allowed;
   transform: none;
 }
 
-input[type="range"]:disabled::-moz-range-thumb {
+input[type='range']:disabled::-moz-range-thumb {
   cursor: not-allowed;
   transform: none;
 }

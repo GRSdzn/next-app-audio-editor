@@ -7,6 +7,7 @@ interface Track {
   title: string;
   url: string;
   duration?: number;
+  file?: File; // добавляем опциональное поле для файла
 }
 
 // Добавляем интерфейс AudioEffects
@@ -24,6 +25,12 @@ interface GlobalAudioContextType {
   currentTime: number;
   duration: number;
   volume: number;
+
+  // Список треков
+  tracks: Track[];
+  addTrack: (track: Track) => void;
+  removeTrack: (trackId: string) => void;
+  clearTracks: () => void;
 
   // Методы управления
   playTrack: (track: Track) => void;
@@ -61,6 +68,35 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(1);
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
+
+  // Новое состояние для списка треков
+  const [tracks, setTracks] = useState<Track[]>([]);
+
+  // Методы для управления треками
+  const addTrack = (track: Track) => {
+    setTracks((prev) => {
+      // Проверяем, не существует ли уже трек с таким ID
+      const exists = prev.some((t) => t.id === track.id);
+      if (exists) {
+        return prev;
+      }
+      return [...prev, track];
+    });
+  };
+
+  const removeTrack = (trackId: string) => {
+    setTracks((prev) => prev.filter((track) => track.id !== trackId));
+
+    // Если удаляемый трек сейчас играет, останавливаем его
+    if (currentTrack && currentTrack.id === trackId) {
+      stopTrack();
+    }
+  };
+
+  const clearTracks = () => {
+    setTracks([]);
+    stopTrack();
+  };
 
   // Настройка AudioContext для эффектов
   const setupAudioContext = async () => {
@@ -280,6 +316,10 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
         currentTime,
         duration,
         volume,
+        tracks,
+        addTrack,
+        removeTrack,
+        clearTracks,
         playTrack,
         pauseTrack,
         resumeTrack,
@@ -307,4 +347,4 @@ export function useGlobalAudio() {
 }
 
 // Экспортируем тип для использования в других компонентах
-export type { AudioEffects };
+export type { AudioEffects, Track };
