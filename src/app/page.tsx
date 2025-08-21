@@ -1,52 +1,29 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { AudioUpload } from "@/components/features/audio-upload/audio-upload.component";
-import { AudioProcessing } from "@/components/features/audio-processing/audio-processing.component";
-import { AudioPlayer } from "@/components/ui/audio-player";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Notification } from "@/components/ui/notification";
-import { LoadingScreen } from "@/components/ui/loading-screen";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { useAudioProcessor } from "@/hooks/use-audio-processor";
-import { useAudioFiles } from "@/hooks/use-audio-files";
-import { useNotifications } from "@/hooks/use-notifications";
-import { AudioPreset } from "@/types/audio";
-import { Music, Sparkles, Download, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from 'react';
+import { AudioUpload } from '@/components/features/audio-upload/audio-upload.component';
+import { AudioProcessing } from '@/components/features/audio-processing/audio-processing.component';
+import { RealtimeEffects } from '@/components/features/realtime-effects/realtime-effects.component';
+import { AudioPlayer } from '@/components/ui/audio-player';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
+import { Notification } from '@/components/ui/notification';
+import { LoadingScreen } from '@/components/ui/loading-screen';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAudioProcessor } from '@/hooks/use-audio-processor';
+import { useAudioFiles } from '@/hooks/use-audio-files';
+import { useNotifications } from '@/hooks/use-notifications';
+import { AudioPreset } from '@/types/audio';
+import { Music, Sparkles, Download, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function HomePage() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [showMainContent, setShowMainContent] = useState(false);
 
-  const {
-    isLoading,
-    isProcessing,
-    progress,
-    error,
-    processAudio,
-    isReady,
-    clearError,
-  } = useAudioProcessor();
+  const { isLoading, isProcessing, progress, error, processAudio, isReady, clearError } = useAudioProcessor();
 
-  const {
-    originalFile,
-    originalUrl,
-    processedAudios,
-    handleFileSelect,
-    addProcessedAudio,
-    downloadAudio,
-    removeProcessedAudio,
-  } = useAudioFiles();
+  const { originalFile, originalUrl, processedAudios, handleFileSelect, addProcessedAudio, downloadAudio, removeProcessedAudio } = useAudioFiles();
 
-  const { notifications, removeNotification, showSuccess, showError } =
-    useNotifications();
+  const { notifications, removeNotification, showSuccess, showError } = useNotifications();
 
   // Simulate app initialization
   useEffect(() => {
@@ -57,11 +34,7 @@ export default function HomePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLoadingComplete = () => {
-    setShowMainContent(true);
-  };
-
-  const handleProcess = async (preset: AudioPreset, format: "mp3" | "wav") => {
+  const handleProcess = async (preset: AudioPreset, format: 'mp3' | 'wav') => {
     if (!originalFile) return;
 
     clearError();
@@ -71,7 +44,7 @@ export default function HomePage() {
       addProcessedAudio(result);
       showSuccess(`Трек "${preset.name}" успешно обработан! 🎵`, 5000);
     } else {
-      showError("Ошибка при обработке аудио файла");
+      showError('Ошибка при обработке аудио файла');
     }
   };
 
@@ -83,12 +56,7 @@ export default function HomePage() {
   return (
     <>
       {/* Loading Screen */}
-      {isInitialLoading && (
-        <LoadingScreen
-          isLoading={isInitialLoading}
-          onComplete={() => setIsInitialLoading(false)}
-        />
-      )}
+      {isInitialLoading && <LoadingScreen isLoading={isInitialLoading} onComplete={() => setIsInitialLoading(false)} />}
 
       {/* Main Application */}
       {!isInitialLoading && (
@@ -103,23 +71,15 @@ export default function HomePage() {
                     <Music className="h-10 w-10 text-white" />
                   </div>
                   <div className="animate-in slide-in-from-left duration-700 delay-200">
-                    <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
-                      Audio Processor
-                    </h1>
-                    <p className="text-xl text-muted-foreground mt-3 max-w-2xl">
-                      Профессиональная обработка аудио с эффектами в браузере
-                    </p>
+                    <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">Audio Processor</h1>
+                    <p className="text-xl text-muted-foreground mt-3 max-w-2xl">Профессиональная обработка аудио с эффектами в браузере</p>
                     <div className="flex items-center space-x-4 mt-4">
                       <div className="flex items-center space-x-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-full animate-in slide-in-from-left duration-700 delay-500">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-sm font-medium text-green-700 dark:text-green-300">
-                          Онлайн
-                        </span>
+                        <span className="text-sm font-medium text-green-700 dark:text-green-300">Онлайн</span>
                       </div>
                       <div className="flex items-center space-x-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full animate-in slide-in-from-left duration-700 delay-700">
-                        <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                          Бесплатно
-                        </span>
+                        <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Бесплатно</span>
                       </div>
                     </div>
                   </div>
@@ -145,49 +105,35 @@ export default function HomePage() {
               <div className="lg:col-span-2 space-y-8">
                 {/* File Upload Section */}
                 <div className="transform transition-all duration-500 hover:scale-[1.02] hover:shadow-lg animate-in slide-in-from-bottom duration-700">
-                  <AudioUpload
-                    onFileSelect={handleFileSelectWithNotification}
-                    isDisabled={isLoading || isProcessing}
-                  />
+                  <AudioUpload onFileSelect={handleFileSelectWithNotification} isDisabled={isLoading || isProcessing} />
                 </div>
 
                 {/* Processing Controls */}
                 {originalFile && (
                   <div className="transform transition-all duration-500 hover:scale-[1.02] hover:shadow-lg animate-in slide-in-from-bottom-4 duration-700 delay-200">
-                    <AudioProcessing
-                      onProcess={handleProcess}
-                      isProcessing={isProcessing}
-                      progress={progress}
-                      error={error}
-                      isReady={isReady}
-                    />
+                    <AudioProcessing onProcess={handleProcess} isProcessing={isProcessing} progress={progress} error={error} isReady={isReady} />
                   </div>
                 )}
               </div>
 
               {/* Right Column - Original File */}
               {originalFile && originalUrl && (
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 space-y-6">
                   <Card className="sticky top-8 border-2 border-dashed border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 shadow-lg hover:shadow-xl transition-all duration-300 animate-in slide-in-from-right-4 duration-700">
                     <CardHeader className="text-center pb-4">
                       <div className="mx-auto p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full w-fit mb-4 shadow-lg">
                         <Music className="h-6 w-6 text-white" />
                       </div>
-                      <CardTitle className="text-lg font-semibold">
-                        Оригинальный файл
-                      </CardTitle>
-                      <CardDescription className="text-sm font-medium">
-                        {originalFile.name}
-                      </CardDescription>
+                      <CardTitle className="text-lg font-semibold">Оригинальный файл</CardTitle>
+                      <CardDescription className="text-sm font-medium">{originalFile.name}</CardDescription>
                       <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs font-semibold shadow-sm">
                         {(originalFile.size / 1024 / 1024).toFixed(2)} MB
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
-                      <AudioPlayer
-                        src={originalUrl}
-                        title={originalFile.name}
-                      />
+                      <AudioPlayer src={originalUrl} title={originalFile.name} />
+                      
+
                     </CardContent>
                   </Card>
                 </div>
@@ -200,13 +146,9 @@ export default function HomePage() {
                 <div className="text-center mb-10 animate-in slide-in-from-bottom duration-700">
                   <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl shadow-lg">
                     <Sparkles className="h-6 w-6 text-green-600 dark:text-green-400" />
-                    <h2 className="text-3xl font-bold text-green-800 dark:text-green-200">
-                      Обработанные файлы
-                    </h2>
+                    <h2 className="text-3xl font-bold text-green-800 dark:text-green-200">Обработанные файлы</h2>
                   </div>
-                  <p className="text-muted-foreground mt-3 text-lg">
-                    Прослушайте результат и скачайте файлы
-                  </p>
+                  <p className="text-muted-foreground mt-3 text-lg">Прослушайте результат и скачайте файлы</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -219,21 +161,10 @@ export default function HomePage() {
                             <span>{audio.preset.name}</span>
                           </div>
                           <div className="flex items-center space-x-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => downloadAudio(audio)}
-                              className="h-8 w-8 hover:bg-primary/10 transition-colors"
-                              title="Скачать"
-                            >
+                            <Button variant="ghost" size="icon" onClick={() => downloadAudio(audio)} className="h-8 w-8 hover:bg-primary/10 transition-colors" title="Скачать">
                               <Download className="h-4 w-4" />
                             </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => removeProcessedAudio(index)}
-                              className="flex items-center gap-1 text-destructive hover:text-destructive"
-                            >
+                            <Button variant="outline" size="sm" onClick={() => removeProcessedAudio(index)} className="flex items-center gap-1 text-destructive hover:text-destructive">
                               <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
@@ -256,13 +187,7 @@ export default function HomePage() {
 
           {/* Notifications */}
           {notifications.map((notification) => (
-            <Notification
-              key={notification.id}
-              message={notification.message}
-              type={notification.type}
-              duration={notification.duration}
-              onClose={() => removeNotification(notification.id)}
-            />
+            <Notification key={notification.id} message={notification.message} type={notification.type} duration={notification.duration} onClose={() => removeNotification(notification.id)} />
           ))}
         </div>
       )}

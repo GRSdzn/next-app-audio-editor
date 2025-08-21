@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AudioPlayerProvider } from "@/contexts/audio-player-context";
-import { Toaster } from "sonner";
-import { cn } from "@/lib/utils";
+import { GlobalAudioPlayer } from "@/components/features/global-audio-player/global-audio-player.component";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "next-themes";
+import { GlobalAudioProvider } from "@/contexts/global-audio-context";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Audio Processor",
-  description: "Профессиональная обработка аудио с эффектами в браузере",
+  title: "Audio Editor",
+  description: "Professional audio editing tool with real-time effects",
 };
 
 export default function RootLayout({
@@ -16,24 +21,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                const theme = localStorage.getItem('theme') || 
-                  (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                document.documentElement.classList.toggle('dark', theme === 'dark');
-              })()
-            `,
-          }}
-        />
-      </head>
-      <body className={cn("antialiased")}>
-        <AudioPlayerProvider>
-          {children}
-          <Toaster />
-        </AudioPlayerProvider>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <GlobalAudioProvider>
+            <AudioPlayerProvider>
+              <div className="min-h-screen bg-background">
+                {children}
+                <GlobalAudioPlayer />
+              </div>
+              <Toaster />
+            </AudioPlayerProvider>
+          </GlobalAudioProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
