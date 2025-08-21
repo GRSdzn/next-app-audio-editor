@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Audio Processor - Аудио Редактор
 
-## Getting Started
+_Профессиональная обработка аудио с эффектами прямо в браузере_
 
-First, run the development server:
+## Описание / Description
+
+### Русский
+
+**Audio Processor** — это современное веб-приложение для обработки аудиофайлов, построенное на Next.js и использующее мощь FFmpeg для применения различных звуковых эффектов. Приложение работает полностью в браузере, обеспечивая конфиденциальность ваших файлов.
+
+#### Основные возможности:
+
+- **Slowed + Reverb** - замедленная версия с реверберацией
+- **Nightcore** - ускоренная версия с повышенным тоном
+- **Deep Slowed** - сильно замедленная версия с басом
+- **Chipmunk** - высокий голос как у бурундука
+- **Deep Voice** - глубокий низкий голос
+- **Студийное качество** - максимальное качество без эффектов
+
+#### Особенности:
+
+- Работает полностью в браузере (без загрузки на сервер)
+- Современный адаптивный интерфейс с темной/светлой темой
+- Поддержка мобильных устройств
+- Встроенный аудиоплеер для прослушивания результатов
+- Поддержка форматов: MP3, WAV, FLAC, OGG, M4A
+- Отображение прогресса обработки в реальном времени
+- Быстрая обработка с использованием WebAssembly
+
+### English
+
+**Audio Processor** is a modern web application for audio file processing, built with Next.js and powered by FFmpeg for applying various sound effects. The application runs entirely in the browser, ensuring the privacy of your files.
+
+#### Key Features:
+
+- **Slowed + Reverb** - slowed version with reverberation
+- **Nightcore** - accelerated version with higher pitch
+- **Deep Slowed** - heavily slowed version with bass boost
+- **Chipmunk** - high-pitched chipmunk voice effect
+- **Deep Voice** - deep low voice effect
+- **Studio Quality** - maximum quality without effects
+
+#### Features:
+
+- Runs entirely in browser (no server upload required)
+- Modern responsive interface with dark/light theme
+- Mobile device support
+- Built-in audio player for result preview
+- Supported formats: MP3, WAV, FLAC, OGG, M4A
+- Real-time processing progress display
+- Fast processing using WebAssembly
+
+## Быстрый старт / Quick Start
+
+### Установка / Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Клонировать репозиторий / Clone repository
+git clone https://github.com/yourusername/next-app-audio-editor.git
+cd next-app-audio-editor
+
+# Установить зависимости / Install dependencies
+npm install
+# или / or
+yarn install
+# или / or
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Запуск / Running
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Запустить сервер разработки / Start development server
+npm run dev
+# или / or
+yarn dev
+# или / or
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Откройте [http://localhost:3000](http://localhost:3000) в браузере.
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-To learn more about Next.js, take a look at the following resources:
+## Технологии / Technologies
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, Radix UI
+- **Audio Processing**: FFmpeg WebAssembly
+- **State Management**: React Hooks, Context API
+- **File Handling**: React Dropzone
+- **Notifications**: Sonner
+- **Icons**: Lucide React
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Использование / Usage
 
-## Deploy on Vercel
+### Русский
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Загрузите файл**: Перетащите аудиофайл в область загрузки или нажмите для выбора
+2. **Выберите эффект**: Выберите один из предустановленных эффектов
+3. **Выберите формат**: MP3 или WAV
+4. **Обработайте**: Нажмите кнопку "Обработать"
+5. **Прослушайте**: Используйте встроенный плеер для прослушивания
+6. **Скачайте**: Скачайте обработанный файл
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### English
+
+1. **Upload file**: Drag and drop an audio file or click to select
+2. **Choose effect**: Select one of the preset effects
+3. **Select format**: MP3 or WAV
+4. **Process**: Click the "Process" button
+5. **Listen**: Use the built-in player to preview
+6. **Download**: Download the processed file
+
+## Сборка / Build
+
+```bash
+# Создать production сборку / Create production build
+npm run build
+
+# Запустить production сервер / Start production server
+npm run start
+```
+
+## Лицензия / License
+
+MIT License - см. файл [LICENSE](LICENSE) для деталей.
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+## Вклад в проект / Contributing
+
+Приветствуются любые предложения и улучшения! Создайте issue или pull request.
+
+Contributions are welcome! Please feel free to submit issues and pull requests.
