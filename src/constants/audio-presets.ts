@@ -1,9 +1,42 @@
 import { AudioEffect, AudioFormat, AudioPreset } from "@/types/audio";
+import { AudioEffects } from "@/contexts/global-audio-context";
 
 // Добавляем определение поддерживаемых форматов
 export const SUPPORTED_FORMATS: string[] = ["mp3", "wav", "flac", "m4a", "ogg"];
 
 export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+// Пресеты для реального времени
+export const REALTIME_PRESETS: Record<string, { name: string; effects: AudioEffects }> = {
+  default: {
+    name: 'Обычный',
+    effects: { speed: 1.0, reverb: 0, pitch: 1.0, keepPitch: false }
+  },
+  slowedReverb: {
+    name: 'Slowed + Reverb',
+    effects: { speed: 0.8, reverb: 0.6, pitch: 0.9, keepPitch: false }
+  },
+  nightcore: {
+    name: 'Nightcore',
+    effects: { speed: 1.25, reverb: 0.1, pitch: 1.2, keepPitch: false }
+  },
+  deepSlowed: {
+    name: 'Deep Slowed',
+    effects: { speed: 0.7, reverb: 0.4, pitch: 0.8, keepPitch: false }
+  },
+  speedUp: {
+    name: 'Speed Up',
+    effects: { speed: 1.4, reverb: 0, pitch: 1.0, keepPitch: true }
+  },
+  chipmunk: {
+    name: 'Chipmunk',
+    effects: { speed: 1.3, reverb: 0, pitch: 1.5, keepPitch: false }
+  },
+  deepVoice: {
+    name: 'Deep Voice',
+    effects: { speed: 0.9, reverb: 0.2, pitch: 0.7, keepPitch: false }
+  }
+};
 
 // Упростить эффекты для лучшего качества:
 export const AUDIO_EFFECTS = {

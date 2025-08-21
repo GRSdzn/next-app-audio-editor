@@ -2,51 +2,30 @@
 
 import React, { useState, useEffect } from 'react';
 import { AudioUpload } from '@/components/features/audio-upload/audio-upload.component';
-import { AudioProcessing } from '@/components/features/audio-processing/audio-processing.component';
 import { RealtimeEffects } from '@/components/features/realtime-effects/realtime-effects.component';
 import { AudioPlayer } from '@/components/ui/audio-player';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Notification } from '@/components/ui/notification';
 import { LoadingScreen } from '@/components/ui/loading-screen';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useAudioProcessor } from '@/hooks/use-audio-processor';
 import { useAudioFiles } from '@/hooks/use-audio-files';
 import { useNotifications } from '@/hooks/use-notifications';
-import { AudioPreset } from '@/types/audio';
-import { Music, Sparkles, Download, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Music, Sparkles } from 'lucide-react';
 
 export default function HomePage() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-  const { isLoading, isProcessing, progress, error, processAudio, isReady, clearError } = useAudioProcessor();
-
-  const { originalFile, originalUrl, processedAudios, handleFileSelect, addProcessedAudio, downloadAudio, removeProcessedAudio } = useAudioFiles();
-
-  const { notifications, removeNotification, showSuccess, showError } = useNotifications();
+  const { originalFile, originalUrl, handleFileSelect } = useAudioFiles();
+  const { notifications, removeNotification, showSuccess } = useNotifications();
 
   // Simulate app initialization
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialLoading(false);
-    }, 3000); // 3 секунды для демонстрации загрузки
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
-
-  const handleProcess = async (preset: AudioPreset, format: 'mp3' | 'wav') => {
-    if (!originalFile) return;
-
-    clearError();
-    const result = await processAudio(originalFile, preset, format);
-
-    if (result) {
-      addProcessedAudio(result);
-      showSuccess(`Трек "${preset.name}" успешно обработан! 🎵`, 5000);
-    } else {
-      showError('Ошибка при обработке аудио файла');
-    }
-  };
 
   const handleFileSelectWithNotification = (file: File) => {
     handleFileSelect(file);
@@ -72,14 +51,14 @@ export default function HomePage() {
                   </div>
                   <div className="animate-in slide-in-from-left duration-700 delay-200">
                     <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">Audio Processor</h1>
-                    <p className="text-xl text-muted-foreground mt-3 max-w-2xl">Профессиональная обработка аудио с эффектами в браузере</p>
+                    <p className="text-xl text-muted-foreground mt-3 max-w-2xl">Эффекты в реальном времени для аудио</p>
                     <div className="flex items-center space-x-4 mt-4">
                       <div className="flex items-center space-x-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-full animate-in slide-in-from-left duration-700 delay-500">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                         <span className="text-sm font-medium text-green-700 dark:text-green-300">Онлайн</span>
                       </div>
                       <div className="flex items-center space-x-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full animate-in slide-in-from-left duration-700 delay-700">
-                        <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Бесплатно</span>
+                        <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Реальное время</span>
                       </div>
                     </div>
                   </div>
@@ -100,26 +79,17 @@ export default function HomePage() {
 
           {/* Main Content */}
           <div className="max-w-6xl mx-auto px-4 pb-16">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Left Column - Upload & Processing */}
-              <div className="lg:col-span-2 space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Left Column - Upload */}
+              <div className="space-y-8">
                 {/* File Upload Section */}
                 <div className="transform transition-all duration-500 hover:scale-[1.02] hover:shadow-lg animate-in slide-in-from-bottom duration-700">
-                  <AudioUpload onFileSelect={handleFileSelectWithNotification} isDisabled={isLoading || isProcessing} />
+                  <AudioUpload onFileSelect={handleFileSelectWithNotification} />
                 </div>
 
-                {/* Processing Controls */}
-                {originalFile && (
-                  <div className="transform transition-all duration-500 hover:scale-[1.02] hover:shadow-lg animate-in slide-in-from-bottom-4 duration-700 delay-200">
-                    <AudioProcessing onProcess={handleProcess} isProcessing={isProcessing} progress={progress} error={error} isReady={isReady} />
-                  </div>
-                )}
-              </div>
-
-              {/* Right Column - Original File */}
-              {originalFile && originalUrl && (
-                <div className="lg:col-span-1 space-y-6">
-                  <Card className="sticky top-8 border-2 border-dashed border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 shadow-lg hover:shadow-xl transition-all duration-300 animate-in slide-in-from-right-4 duration-700">
+                {/* Original File Player */}
+                {originalFile && originalUrl && (
+                  <Card className="border-2 border-dashed border-blue-200 dark:border-blue-800 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-950/20 dark:to-purple-950/20 shadow-lg hover:shadow-xl transition-all duration-300 animate-in slide-in-from-bottom-4 duration-700 delay-200">
                     <CardHeader className="text-center pb-4">
                       <div className="mx-auto p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full w-fit mb-4 shadow-lg">
                         <Music className="h-6 w-6 text-white" />
@@ -132,54 +102,45 @@ export default function HomePage() {
                     </CardHeader>
                     <CardContent className="pt-0">
                       <AudioPlayer src={originalUrl} title={originalFile.name} />
-                      
-
                     </CardContent>
                   </Card>
+                )}
+              </div>
+
+              {/* Right Column - Realtime Effects */}
+              {originalFile && originalUrl && (
+                <div className="space-y-6">
+                  <div className="transform transition-all duration-500 hover:scale-[1.02] hover:shadow-lg animate-in slide-in-from-right duration-700">
+                    <RealtimeEffects audioUrl={originalUrl} />
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Processed Audio Results */}
-            {processedAudios.length > 0 && (
-              <div className="mt-16">
-                <div className="text-center mb-10 animate-in slide-in-from-bottom duration-700">
-                  <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl shadow-lg">
-                    <Sparkles className="h-6 w-6 text-green-600 dark:text-green-400" />
-                    <h2 className="text-3xl font-bold text-green-800 dark:text-green-200">Обработанные файлы</h2>
-                  </div>
-                  <p className="text-muted-foreground mt-3 text-lg">Прослушайте результат и скачайте файлы</p>
+            {/* Info Section */}
+            {!originalFile && (
+              <div className="mt-16 text-center animate-in slide-in-from-bottom duration-700">
+                <div className="inline-flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl shadow-lg">
+                  <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <h2 className="text-2xl font-bold text-purple-800 dark:text-purple-200">Загрузите аудио файл</h2>
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {processedAudios.map((audio, index) => (
-                    <Card key={index} className="mb-4">
-                      <CardHeader>
-                        <CardTitle className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <Sparkles className="h-5 w-5 text-purple-500" />
-                            <span>{audio.preset.name}</span>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Button variant="ghost" size="icon" onClick={() => downloadAudio(audio)} className="h-8 w-8 hover:bg-primary/10 transition-colors" title="Скачать">
-                              <Download className="h-4 w-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => removeProcessedAudio(index)} className="flex items-center gap-1 text-destructive hover:text-destructive">
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </div>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <AudioPlayer
-                          src={audio.url}
-                          title={`${originalFile?.name} - ${audio.preset.name}`}
-                          // Убираем onDownload чтобы избежать дублирования кнопок
-                          // onDownload={() => downloadAudio(audio)}
-                        />
-                      </CardContent>
-                    </Card>
-                  ))}
+                <p className="text-muted-foreground mt-3 text-lg">Применяйте эффекты в реальном времени без ожидания</p>
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                  <div className="p-6 bg-card rounded-xl border shadow-sm">
+                    <div className="text-2xl mb-2">🎵</div>
+                    <h3 className="font-semibold mb-2">Slowed + Reverb</h3>
+                    <p className="text-sm text-muted-foreground">Замедленная версия с атмосферной реверберацией</p>
+                  </div>
+                  <div className="p-6 bg-card rounded-xl border shadow-sm">
+                    <div className="text-2xl mb-2">⚡</div>
+                    <h3 className="font-semibold mb-2">Speed Up</h3>
+                    <p className="text-sm text-muted-foreground">Ускоренная версия с сохранением тона</p>
+                  </div>
+                  <div className="p-6 bg-card rounded-xl border shadow-sm">
+                    <div className="text-2xl mb-2">🎛️</div>
+                    <h3 className="font-semibold mb-2">Ручная настройка</h3>
+                    <p className="text-sm text-muted-foreground">Точная настройка всех параметров</p>
+                  </div>
                 </div>
               </div>
             )}

@@ -40,6 +40,7 @@ interface GlobalAudioContextType {
   audioContext: AudioContext | null;
   sourceNode: MediaElementAudioSourceNode | null;
   applyRealtimeEffects: (effects: AudioEffects) => void;
+  pauseAllExcept: (exceptId: string) => void; // Добавлено для совместимости
 }
 
 const GlobalAudioContext = createContext<GlobalAudioContextType | undefined>(undefined);
@@ -52,6 +53,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
   const dryGainRef = useRef<GainNode | null>(null);
   const wetGainRef = useRef<GainNode | null>(null);
   const convolverRef = useRef<ConvolverNode | null>(null);
+  const playersRef = useRef<Map<string, HTMLAudioElement>>(new Map()); // Для управления несколькими плеерами
 
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -62,25 +64,17 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
 
   // Настройка AudioContext для эффектов
   const setupAudioContext = async () => {
-    if (!audioRef.current) return;
+    if (!audioRef.current || audioContextRef.current) return; // Избегаем повторной настройки
 
     try {
-      // Закрываем предыдущий AudioContext
-      if (audioContextRef.current) {
-        await audioContextRef.current.close();
-        audioContextRef.current = null;
-        sourceNodeRef.current = null;
-      }
-
-      // Создаем новый AudioContext
       audioContextRef.current = new AudioContext();
+
       const audio = audioRef.current;
 
       // Проверяем, не подключен ли уже элемент
       try {
         sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audio);
       } catch (error) {
-        // Если элемент уже подключен, создаем новый audio элемент
         console.warn('Audio element already connected, creating new element');
         const newAudio = new Audio();
         newAudio.src = audio.src;
@@ -189,8 +183,25 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const registerPlayer = (id: string, audioElement: HTMLAudioElement) => {
+    playersRef.current.set(id, audioElement);
+  };
+
+  const unregisterPlayer = (id: string) => {
+    playersRef.current.delete(id);
+  };
+
+  const pauseAllExcept = (exceptId: string) => {
+    playersRef.current.forEach((audio, id) => {
+      if (id !== exceptId && !audio.paused) {
+        audio.pause();
+      }
+    });
+  };
+
   const playTrack = async (track: Track) => {
     initAudio();
+    pauseAllExcept(track.id); // Пауза всех кроме текущего
 
     if (audioRef.current) {
       // Если это новый трек
@@ -279,6 +290,7 @@ export function GlobalAudioProvider({ children }: { children: ReactNode }) {
         audioContext: audioContextRef.current,
         sourceNode: sourceNodeRef.current,
         applyRealtimeEffects,
+        pauseAllExcept,
       }}
     >
       {children}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { AudioPlayerProvider } from "@/contexts/audio-player-context";
 import { GlobalAudioPlayer } from "@/components/features/global-audio-player/global-audio-player.component";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
@@ -29,13 +28,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <GlobalAudioProvider>
-            <AudioPlayerProvider>
-              <div className="min-h-screen bg-background">
-                {children}
-                <GlobalAudioPlayer />
-              </div>
-              <Toaster />
-            </AudioPlayerProvider>
+            <div className="min-h-screen bg-background">
+              {children}
+              <GlobalAudioPlayer />
+            </div>
+            <Toaster />
           </GlobalAudioProvider>
         </ThemeProvider>
       </body>

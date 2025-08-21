@@ -3,7 +3,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Play, Pause, Volume2, X } from 'lucide-react';
+import { Play, Pause, Volume2, X, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGlobalAudio } from '@/contexts/global-audio-context';
 
@@ -36,6 +36,15 @@ export function GlobalAudioPlayer() {
     setVolume(value[0]);
   };
 
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = currentTrack.url;
+    link.download = `${currentTrack.title || 'track'}.mp3`; // Предполагаем mp3, скорректируйте по необходимости
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div
       className={cn(
@@ -44,11 +53,11 @@ export function GlobalAudioPlayer() {
         isPlayerVisible ? 'translate-y-0' : 'translate-y-full'
       )}
     >
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-8 py-6">
         <div className="flex items-center gap-4">
           {/* Информация о треке */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-medium truncate">{currentTrack.title}</h3>
+            <h3 className="text-sm font-medium truncate text-gray-600">{currentTrack.title}</h3>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-muted-foreground">{formatTime(currentTime)}</span>
               <div className="flex-1">
@@ -70,6 +79,11 @@ export function GlobalAudioPlayer() {
             <Volume2 className="h-4 w-4 text-muted-foreground" />
             <Slider value={[volume]} max={1} step={0.01} onValueChange={handleVolumeChange} className="w-20" />
           </div>
+
+          {/* Кнопка скачивания */}
+          <Button variant="ghost" size="sm" onClick={handleDownload} className="h-8 w-8 p-0">
+            <Download className="h-4 w-4" />
+          </Button>
 
           {/* Кнопка закрытия */}
           <Button variant="ghost" size="sm" onClick={stopTrack} className="h-8 w-8 p-0">
