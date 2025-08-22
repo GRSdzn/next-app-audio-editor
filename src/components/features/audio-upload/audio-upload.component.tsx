@@ -21,11 +21,14 @@ export const AudioUpload: React.FC<AudioUploadProps> = ({
   onFileSelect,
   isDisabled = false,
 }) => {
-  const acceptedFormats = SUPPORTED_FORMATS.reduce((acc: Record<string, string[]>, format: string) => {
-    acc["audio/*"] = acc["audio/*"] || [];
-    acc["audio/*"].push(`.${format}`);
-    return acc;
-  }, {} as Record<string, string[]>);
+  const acceptedFormats = SUPPORTED_FORMATS.reduce(
+    (acc: Record<string, string[]>, format: string) => {
+      acc["audio/*"] = acc["audio/*"] || [];
+      acc["audio/*"].push(`.${format}`);
+      return acc;
+    },
+    {} as Record<string, string[]>
+  );
 
   return (
     <Card>

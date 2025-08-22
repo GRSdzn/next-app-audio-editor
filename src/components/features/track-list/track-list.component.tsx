@@ -1,17 +1,24 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useGlobalAudio } from '@/contexts/global-audio-context';
-import { Button } from '@/components/ui/button';
-import { Play, Pause, Trash2, Music } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { Track, useAudio } from "@/contexts/audio-context";
+import { Button } from "@/components/ui/button";
+import { Pause, Play, Trash2, Music } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function TrackList() {
-  const { tracks, currentTrack, isPlaying, playTrack, pauseTrack, removeTrack } = useGlobalAudio();
+  const {
+    tracks,
+    currentTrack,
+    isPlaying,
+    playTrack,
+    togglePlayPause,
+    removeTrack,
+  } = useAudio();
 
-  const handlePlayPause = (track: any) => {
+  const handlePlayPause = (track: Track) => {
     if (currentTrack?.id === track.id && isPlaying) {
-      pauseTrack();
+      togglePlayPause();
     } else {
       playTrack(track);
     }
@@ -33,7 +40,9 @@ export function TrackList() {
 
   return (
     <div className="space-y-2 p-4">
-      <h3 className="font-semibold text-sm text-muted-foreground mb-3">Загруженные треки ({tracks.length})</h3>
+      <h3 className="font-semibold text-sm text-muted-foreground mb-3">
+        Загруженные треки ({tracks.length})
+      </h3>
       {tracks.map((track) => {
         const isCurrentTrack = currentTrack?.id === track.id;
         const isCurrentlyPlaying = isCurrentTrack && isPlaying;
@@ -41,7 +50,10 @@ export function TrackList() {
         return (
           <div
             key={track.id}
-            className={cn('group flex items-center gap-2 p-2 rounded-md border transition-colors', isCurrentTrack && 'bg-accent border-primary')}
+            className={cn(
+              "group flex items-center gap-2 p-2 rounded-md border transition-colors",
+              isCurrentTrack && "bg-accent border-primary"
+            )}
           >
             <Button
               variant="ghost"
@@ -49,22 +61,30 @@ export function TrackList() {
               className="h-8 w-8 p-0 flex-shrink-0"
               onClick={() => handlePlayPause(track)}
             >
-              {isCurrentlyPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              {isCurrentlyPlaying ? (
+                <Pause className="h-4 w-4" />
+              ) : (
+                <Play className="h-4 w-4" />
+              )}
             </Button>
 
-            <div className="flex-1 min-w-0 cursor-pointer" onClick={() => handlePlayPause(track)}>
+            <div
+              className="flex-1 min-w-0 cursor-pointer"
+              onClick={() => handlePlayPause(track)}
+            >
               <p className="text-sm font-medium truncate">{track.title}</p>
               {track.duration && (
                 <p className="text-xs text-muted-foreground">
-                  {Math.floor(track.duration / 60)}:{String(Math.floor(track.duration % 60)).padStart(2, '0')}
+                  {Math.floor(track.duration / 60)}:
+                  {String(Math.floor(track.duration % 60)).padStart(2, "0")}
                 </p>
               )}
             </div>
 
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-8 w-8 p-0 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" 
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
               onClick={(e) => handleDelete(track.id, e)}
             >
               <Trash2 className="h-4 w-4 text-destructive" />
